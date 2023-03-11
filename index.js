@@ -4,23 +4,27 @@ const mysql = require("mysql2");
 
 // Connect to database
 const db = mysql.createConnection(
-    {
-      host: "localhost",
-      // MySQL username,
-      user: "root",
-      // MySQL password
-      password: "babyshark",
-      database: "cms_db",
-    },
-    console.log(`Connected to the cms_db database.`)
-  );
+  {
+    host: "localhost",
+    // MySQL username,
+    user: "root",
+    // MySQL password
+    password: "babyshark",
+    database: "cms_db",
+  },
+  console.log(`Connected to the cms_db database.`)
+);
 
-  // Query database
+// Query database
+function queryAllEmployees(){
 db.query("SELECT * FROM employees", function (err, results) {
-    console.log(results);
-  });
+  console.log("results:", results);
+  db.end();
+});    
+}
 
-  //The user input Employee Data
+
+//The user input Employee Data
 let employeeData = [];
 
 // An array of initial questions for start of application
@@ -43,22 +47,22 @@ const menuQuestions = async () => {
       },
     ])
     .then(async (data) => {
-        if (data.menulist === "Add Employee") {
-          promptAddEmployee();
-        } else if (data.menulist === " Update Employee Role") {
-          promptUpdateEErole();
-        } else if (data.menulist === "View All Roles") {
-          viewAllRoles();
-        } else if (data.menulist === "Add Role") {
-          promptAddRole();
-        } else if (data.menulist === "View All Departmnts") {
-          viewAllDepartments();
-        } else if (data.menulist === "Add Department") {
-          promptAddDepartment();
-        } else {
-          process.exit();
-        }
-    //   const roles = await Roles.findAll({});
+      if (data.menulist === "Add Employee") {
+        promptAddEmployee();
+      } else if (data.menulist === " Update Employee Role") {
+        promptUpdateEErole();
+      } else if (data.menulist === "View All Roles") {
+        viewAllRoles();
+      } else if (data.menulist === "Add Role") {
+        promptAddRole();
+      } else if (data.menulist === "View All Departmnts") {
+        viewAllDepartments();
+      } else if (data.menulist === "Add Department") {
+        promptAddDepartment();
+      } else {
+        process.exit();
+      }
+      //   const roles = await Roles.findAll({});
       console.log(roles);
     });
 };
@@ -179,7 +183,7 @@ const promptAddRole = () => {
     });
 };
 
-// function to view all departments
+// Function to view all departments
 const viewAllDepartments = () => {
   inquirer
     .prompt([
