@@ -1,3 +1,3 @@
 UPDATE roles
-SET role = "Tax Accountant"
+SET title = "Tax Accountant"
 WHERE id = 1;
