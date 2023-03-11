@@ -1,9 +1,13 @@
+-- Drops the cms_db if currently exists
 DROP DATABASE if exists cms_db;
 
+-- Creates the cms_db database
 CREATE DATABASE cms_db;
 
+-- uses the cms_db
 USE cms_db;
 
+-- Creates the tables for the CMS employee database
 CREATE TABLE departments(id INT NOT NULL PRIMARY KEY auto_increment,
 name VARCHAR(30) UNIQUE);
 
