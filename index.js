@@ -4,19 +4,9 @@ const mysql = require("mysql2");
 const Departments = require("./lib/department");
 const Roles = require("./lib/role");
 const Employees = require("./lib/employee");
+const Employee = require("./lib/employee");
+const db = "./config/connection.js";
 
-// Connect to database
-const db = mysql.createConnection(
-  {
-    host: "localhost",
-    // MySQL username,
-    user: "root",
-    // MySQL password
-    password: "babyshark",
-    database: "cms_db",
-  },
-  console.log(`Connected to the cms_db database.`)
-);
 
 //The user input Employee Data
 let employeeData = [];
@@ -78,27 +68,31 @@ const promptAddEmployee = () => {
         message: "What is the employee's last name?",
         name: "lastname",
       },
-      {
-        type: "list",
-        message: "What is the employee's role?",
-        choices: [queryAllRoles()],
-        name: "employeeRoles",
-      },
+      //   {
+      //     type: "list",
+      //     message: "What is the employee's role?",
+      //     choices: [queryTitleInRoles()],
+      //     name: "employeeRoles",
+      //   },
       {
         type: "input",
         message: "Who is the Manager supervising the employee?",
         name: "supervisor",
       },
     ])
-    .then((data) => {
-      const addEmployee = new Employees(
-        data.firstname,
-        data.lastname,
-        data.employeeRoles,
-        data.supervisor,
+    .then(function (data) {
+      db.query(
+        "INSERT INTO employees SET ?",
+        {
+          first_name: data.firstname,
+          last_name: data.lastname,
+          role_id: data.employeesRoles,
+        },
+        function (error) {
+          if (error) throw error;
+          console.log("Added Employee");
+        }
       );
-      employeeData.push(addEmployee);
-      console.log(employeeData);
       menuQuestions();
     });
 };
@@ -111,7 +105,7 @@ const promptUpdateEErole = () => {
       {
         type: "list",
         message: "Which Employee's role do you want to update?",
-        choices: [queryAllEmployees],
+        choices: [queryAllEmployees()],
         name: "selectemployee",
       },
       {
@@ -121,8 +115,9 @@ const promptUpdateEErole = () => {
       },
     ])
     .then((data) => {
-      const updateEERole = new Employees(data.selectemployee, data.newrole);
-      employeeData.push(updateEERole);
+      const addEmployee = new Employee(data.selectemployee, data.newrole);
+      console.log(data);
+      employeeData.push(addEmployee);
       menuQuestions();
     });
 };
@@ -196,6 +191,14 @@ function queryAllRoles() {
 // Function to view all departments
 function queryAllDepartments() {
   db.query("SELECT * FROM departments", function (err, results) {
+    console.log("results:", results);
+    db.end();
+  });
+}
+
+// Function to view only titles of roles
+function queryTitleInRoles() {
+  db.query("SELECT roles.title FROM roles", function (err, results) {
     console.log("results:", results);
     db.end();
   });
