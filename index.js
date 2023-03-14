@@ -68,12 +68,12 @@ const promptAddEmployee = () => {
         message: "What is the employee's last name?",
         name: "lastname",
       },
-      //   {
-      //     type: "list",
-      //     message: "What is the employee's role?",
-      //     choices: [queryTitleInRoles()],
-      //     name: "employeeRoles",
-      //   },
+        {
+          type: "list",
+          message: "What is the employee's role?",
+          choices: [queryTitleInRoles()],
+          name: "employeeRoles",
+        },
       {
         type: "input",
         message: "Who is the Manager supervising the employee?",
