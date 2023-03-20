@@ -5,12 +5,11 @@ const Departments = require("./lib/department");
 const Roles = require("./lib/role");
 const Employees = require("./lib/employee");
 const Employee = require("./lib/employee");
-let db = require('./config/connection');
+let db = require("./config/connection");
 require("dotenv").config();
 
 //The user input Employee Data
 let employeeData = [];
-
 
 db.connect((err) => {
   if (err) {
@@ -80,16 +79,27 @@ const promptAddEmployee = () => {
       {
         type: "list",
         message: "What is the employee's role?",
-        choices: ['Lawyer', 'Legal Manager', 'Accountant', 'Accounting Manager', 'Engineer', 'Engineer Manager', 'Salesperson', 'Sales Manager'],
+        choices: [
+          "Lawyer",
+          "Legal Manager",
+          "Accountant",
+          "Accounting Manager",
+          "Engineer",
+          "Engineer Manager",
+          "Salesperson",
+          "Sales Manager",
+        ],
         name: "employeeRoles",
       },
       {
         type: "input",
-        message: "Who is the Manager supervising the employee (if none enter null)?",
+        message:
+          "Who is the Manager supervising the employee (if none enter NULL)?",
         name: "supervisor",
       },
     ])
-    .then (function (data) {
+    .then(function (data) {
+      // Employee ID removed from class to make this work
       let newEmployee = new Employee(
         data.firstname,
         data.lastname,
@@ -101,11 +111,10 @@ const promptAddEmployee = () => {
 
       let query = db.query(sql, newEmployee, (err, results) => {
         if (err) throw err;
-        console.log(results);
-        console.log("Successfully Added Employee");
+        employeeData.push(newEmployee);
+        console.log("Successfully added Employee");
+        menuQuestions();
       });
-      // employeeData.push(newEmployee);
-      // console.log('Pushed new employee into array');
     });
 };
 
@@ -127,9 +136,9 @@ const promptUpdateEErole = () => {
       },
     ])
     .then((data) => {
-      const addEmployee = new Employee(data.selectemployee, data.newrole);
+      // const addEmployee = new Employee(data.selectemployee, data.newrole);
       console.log(data);
-      employeeData.push(addEmployee);
+      // employeeData.push(addEmployee);
       // menuQuestions();
     });
 };
@@ -183,18 +192,18 @@ const promptAddDepartment = () => {
 };
 
 // Query database
-// function to view All Employees
-function queryAllEmployees() {
+// function to view All Employee data
+const queryAllEmployees = () => {
   let sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
-  FROM ((employees
-  INNER JOIN roles ON employees.role_id = roles.id)
-  INNER JOIN departments ON roles.department_id = departments.id )`;
+    FROM ((employees
+    INNER JOIN roles ON employees.role_id = roles.id)
+    INNER JOIN departments ON roles.department_id = departments.id )`;
 
-  db.query(sql, function (err, results) {
-    console.log("results:", results);
-    db.end();
-  });
-}
+  // db.query(sql, function (err, results) {
+  //   console.log("results:", results);
+  //   db.end();
+  };
+
 
 // function to view all roles
 
