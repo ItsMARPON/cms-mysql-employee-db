@@ -1,9 +1,18 @@
 const express = require("express");
 const mysql = require("mysql2");
-const db = "./config/connection.js";
+// const db = require("./config/connection");
+require("dotenv").config();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+
+db.connect((err) => {
+  if (err) {
+    throw err;
+  }
+  console.log("Connected to mysql");
+});
 
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
@@ -11,13 +20,14 @@ app.use(express.json());
 
 // Get all employee data
 app.get("/api/employees", (req, res) => {
-  const sql = `SELECT id, first_name, last_name FROM employees`;
+  let sql = `SELECT id, first_name, last_name FROM employees`;
 
   db.query(sql, (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
     }
+    console.log(rows);
     res.status(200).json({ message: "success", data: rows });
   });
 });

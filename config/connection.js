@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 require('dotenv').config();
 
-// Connect to database
+// // Connect to database
 const db = mysql.createConnection(
     {
       host: "localhost",
@@ -9,7 +9,7 @@ const db = mysql.createConnection(
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     },
-    console.log(`Connected to the cms_db database.`)
+    console.log(`Connected to the SQL database.`)
   );
 
   module.exports = db;

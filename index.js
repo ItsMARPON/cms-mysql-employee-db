@@ -5,11 +5,20 @@ const Departments = require("./lib/department");
 const Roles = require("./lib/role");
 const Employees = require("./lib/employee");
 const Employee = require("./lib/employee");
-const db = "./config/connection.js";
-
+let db = require('./config/connection');
+require("dotenv").config();
 
 //The user input Employee Data
 let employeeData = [];
+
+
+db.connect((err) => {
+  if (err) {
+    throw err;
+  }
+  console.log("Connected to MYSQL2");
+  menuQuestions();
+});
 
 // An array of initial questions for start of application
 
@@ -53,7 +62,7 @@ const menuQuestions = async () => {
       //   console.log(roles);
     });
 };
-menuQuestions();
+
 // Questions for Add Employee
 const promptAddEmployee = () => {
   inquirer
@@ -68,138 +77,145 @@ const promptAddEmployee = () => {
         message: "What is the employee's last name?",
         name: "lastname",
       },
-        {
-          type: "list",
-          message: "What is the employee's role?",
-          choices: [queryTitleInRoles()],
-          name: "employeeRoles",
-        },
+      {
+        type: "list",
+        message: "What is the employee's role?",
+        choices: ['Lawyer', 'Legal Manager', 'Accountant', 'Accounting Manager', 'Engineer', 'Engineer Manager', 'Salesperson', 'Sales Manager'],
+        name: "employeeRoles",
+      },
       {
         type: "input",
-        message: "Who is the Manager supervising the employee?",
+        message: "Who is the Manager supervising the employee (if none enter null)?",
         name: "supervisor",
       },
     ])
-    .then(function (data) {
-      db.query(
-        "INSERT INTO employees SET ?",
-        {
-          first_name: data.firstname,
-          last_name: data.lastname,
-          role_id: data.employeesRoles,
-        },
-        function (error) {
-          if (error) throw error;
-          console.log("Added Employee");
-        }
+    .then (function (data) {
+      let newEmployee = new Employee(
+        data.firstname,
+        data.lastname,
+        data.employeesRoles,
+        data.supervisor
       );
-      menuQuestions();
+
+      let sql = `INSERT INTO employees SET ?`;
+
+      let query = db.query(sql, newEmployee, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        console.log("Successfully Added Employee");
+      });
+      // employeeData.push(newEmployee);
+      // console.log('Pushed new employee into array');
     });
 };
 
 // Questions for update Employee Role
 
-// const promptUpdateEErole = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         type: "list",
-//         message: "Which Employee's role do you want to update?",
-//         choices: [queryAllEmployees()],
-//         name: "selectemployee",
-//       },
-//       {
-//         type: "input",
-//         message: "What role do you want to assign to the selected Employee?",
-//         name: "newrole",
-//       },
-//     ])
-//     .then((data) => {
-//       const addEmployee = new Employee(data.selectemployee, data.newrole);
-//       console.log(data);
-//       employeeData.push(addEmployee);
-//       menuQuestions();
-//     });
-// };
+const promptUpdateEErole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Which Employee's role do you want to update?",
+        choices: [queryAllEmployees()],
+        name: "selectemployee",
+      },
+      {
+        type: "input",
+        message: "What role do you want to assign to the selected Employee?",
+        name: "newrole",
+      },
+    ])
+    .then((data) => {
+      const addEmployee = new Employee(data.selectemployee, data.newrole);
+      console.log(data);
+      employeeData.push(addEmployee);
+      // menuQuestions();
+    });
+};
 
-// // Function to Add a Role
-// const promptAddRole = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "What is the role/title name?",
-//         name: "title",
-//       },
-//       {
-//         type: "input",
-//         message: "What is the salary?",
-//         name: "salary",
-//       },
-//       {
-//         type: "list",
-//         message: "What is the department?",
-//         choices: [queryAllDepartments()],
-//         name: "listdepartments",
-//       },
-//     ])
-//     .then((data) => {
-//       const addRole = new Roles(data.title, data.salary, data.listdepartments);
-//       // Need code to add role to table Departments
-//       employeeData.push(addRole);
-//       console.log(employeeData);
-//       menuQuestions();
-//     });
-// };
+// Function to Add a Role
+const promptAddRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the role/title name?",
+        name: "title",
+      },
+      {
+        type: "input",
+        message: "What is the salary?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What is the department?",
+        choices: [queryAllDepartments()],
+        name: "listdepartments",
+      },
+    ])
+    .then((data) => {
+      const addRole = new Roles(data.title, data.salary, data.listdepartments);
+      // Need code to add role to table Departments
+      employeeData.push(addRole);
+      console.log(employeeData);
+      // menuQuestions();
+    });
+};
 
-// // Function to Add a Department
-// const promptAddDepartment = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "What is the name of the Department?",
-//         name: "departmentName",
-//       },
-//     ])
-//     .then((data) => {
-//       const addDepartment = new Departments(data.departmentName);
-//       employeeData.push(addDepartment);
-//       console.log(employeeData);
-//       menuQuestions();
-//     });
-// };
+// Function to Add a Department
+const promptAddDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the Department?",
+        name: "departmentName",
+      },
+    ])
+    .then((data) => {
+      const addDepartment = new Departments(data.departmentName);
+      employeeData.push(addDepartment);
+      console.log(employeeData);
+      // menuQuestions();
+    });
+};
 
-// // Query database
-// // function to view All Employees
-// function queryAllEmployees() {
-//   db.query("SELECT * FROM employees", function (err, results) {
-//     console.log("results:", results);
-//     db.end();
-//   });
-// }
+// Query database
+// function to view All Employees
+function queryAllEmployees() {
+  let sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
+  FROM ((employees
+  INNER JOIN roles ON employees.role_id = roles.id)
+  INNER JOIN departments ON roles.department_id = departments.id )`;
 
-// // function to view all roles
+  db.query(sql, function (err, results) {
+    console.log("results:", results);
+    db.end();
+  });
+}
 
-// function queryAllRoles() {
-//   db.query("SELECT * FROM roles", function (err, results) {
-//     console.log("results:", results);
-//     db.end();
-//   });
-// }
+// function to view all roles
 
-// // Function to view all departments
-// function queryAllDepartments() {
-//   db.query("SELECT * FROM departments", function (err, results) {
-//     console.log("results:", results);
-//     db.end();
-//   });
-// }
+function queryAllRoles() {
+  db.query("SELECT * FROM roles", function (err, results) {
+    console.log("results:", results);
+    db.end();
+  });
+}
 
-// // Function to view only titles of roles
-// function queryTitleInRoles() {
-//   db.query("SELECT roles.title FROM roles", function (err, results) {
-//     console.log("results:", results);
-//     db.end();
-//   });
-// }
+// Function to view all departments
+function queryAllDepartments() {
+  db.query("SELECT * FROM departments", function (err, results) {
+    console.log("results:", results);
+    db.end();
+  });
+}
+
+// Function to view only titles of roles
+function queryTitleInRoles() {
+  db.query("SELECT roles.title FROM roles", function (err, results) {
+    console.log("results:", results);
+  });
+}
