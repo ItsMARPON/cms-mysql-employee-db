@@ -44,21 +44,21 @@ const menuQuestions = async () => {
         queryAllEmployees();
       } else if (data.menulist === "Add Employee") {
         promptAddEmployee();
-      } else if (data.menulist === "Update Employee Role") {
-        promptUpdateEErole();
-      } else if (data.menulist === "View All Roles") {
-        queryAllRoles();
-      } else if (data.menulist === "Add Role") {
-        promptAddRole();
-      } else if (data.menulist === "View All Departments") {
-        queryAllDepartments();
-      } else if (data.menulist === "Add Department") {
-        promptAddDepartment();
+        // } else if (data.menulist === "Update Employee Role") {
+        //   promptUpdateEErole();
+        // } else if (data.menulist === "View All Roles") {
+        //   queryAllRoles();
+        // } else if (data.menulist === "Add Role") {
+        //   promptAddRole();
+        // } else if (data.menulist === "View All Departments") {
+        //   queryAllDepartments();
+        // } else if (data.menulist === "Add Department") {
+        //   promptAddDepartment();
       } else {
         process.exit();
       }
-      //   const roles = await Roles.findAll({});
-      //   console.log(roles);
+      // const roles = await Roles.findAll({});
+      // console.log(data);
     });
 };
 
@@ -106,125 +106,190 @@ const promptAddEmployee = () => {
         data.employeesRoles,
         data.supervisor
       );
+      if (data.employeesRoles === "Lawyer") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Lawyer'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Legal Manager") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Legal Manager'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Accountant") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Accountant'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Accounting Manager") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Accounting Manager'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Engineer") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Engineer'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Engineer Manager") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Engineer Manager'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else if (data.employeesRoles === "Salesperson") {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Salesperson'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      } else {
+        db.query(
+          "SELECT roles.id FROM roles WHERE roles.title = 'Sales Manager'",
+          function (err, results) {
+            console.log("results:", results);
+            db.end();
+          }
+        );
+      }
+
+      // Using sql query to insert the data from prompt inquery into employees table
 
       let sql = `INSERT INTO employees SET ?`;
 
-      let query = db.query(sql, newEmployee, (err, results) => {
-        if (err) throw err;
-        employeeData.push(newEmployee);
-        console.log("Successfully added Employee");
-        menuQuestions();
+      db.query(sql, newEmployee, function (err, results) {
+        employeeData.push(results);
+        console.log(employeeData, "Successfully added new Employee");
+        // menuQuestions();
       });
     });
 };
 
 // Questions for update Employee Role
 
-const promptUpdateEErole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        message: "Which Employee's role do you want to update?",
-        choices: [queryAllEmployees()],
-        name: "selectemployee",
-      },
-      {
-        type: "input",
-        message: "What role do you want to assign to the selected Employee?",
-        name: "newrole",
-      },
-    ])
-    .then((data) => {
-      // const addEmployee = new Employee(data.selectemployee, data.newrole);
-      console.log(data);
-      // employeeData.push(addEmployee);
-      // menuQuestions();
-    });
-};
+// const promptUpdateEErole = () => {
+//   inquirer
+//     .prompt([
+//       {
+//         type: "list",
+//         message: "Which Employee's role do you want to update?",
+//         choices: [queryAllEmployees()],
+//         name: "selectemployee",
+//       },
+//       {
+//         type: "input",
+//         message: "What role do you want to assign to the selected Employee?",
+//         name: "newrole",
+//       },
+//     ])
+//     .then((data) => {
+//       // const addEmployee = new Employee(data.selectemployee, data.newrole);
+//       console.log(data);
+//       // employeeData.push(addEmployee);
+//       // menuQuestions();
+//     });
+// };
 
-// Function to Add a Role
-const promptAddRole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the role/title name?",
-        name: "title",
-      },
-      {
-        type: "input",
-        message: "What is the salary?",
-        name: "salary",
-      },
-      {
-        type: "list",
-        message: "What is the department?",
-        choices: [queryAllDepartments()],
-        name: "listdepartments",
-      },
-    ])
-    .then((data) => {
-      const addRole = new Roles(data.title, data.salary, data.listdepartments);
-      // Need code to add role to table Departments
-      employeeData.push(addRole);
-      console.log(employeeData);
-      // menuQuestions();
-    });
-};
+// // Function to Add a Role
+// const promptAddRole = () => {
+//   inquirer
+//     .prompt([
+//       {
+//         type: "input",
+//         message: "What is the role/title name?",
+//         name: "title",
+//       },
+//       {
+//         type: "input",
+//         message: "What is the salary?",
+//         name: "salary",
+//       },
+//       {
+//         type: "list",
+//         message: "What is the department?",
+//         choices: [queryAllDepartments()],
+//         name: "listdepartments",
+//       },
+//     ])
+//     .then((data) => {
+//       const addRole = new Roles(data.title, data.salary, data.listdepartments);
+//       // Need code to add role to table Departments
+//       employeeData.push(addRole);
+//       console.log(employeeData);
+//       // menuQuestions();
+//     });
+// };
 
-// Function to Add a Department
-const promptAddDepartment = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the name of the Department?",
-        name: "departmentName",
-      },
-    ])
-    .then((data) => {
-      const addDepartment = new Departments(data.departmentName);
-      employeeData.push(addDepartment);
-      console.log(employeeData);
-      // menuQuestions();
-    });
-};
+// // Function to Add a Department
+// const promptAddDepartment = () => {
+//   inquirer
+//     .prompt([
+//       {
+//         type: "input",
+//         message: "What is the name of the Department?",
+//         name: "departmentName",
+//       },
+//     ])
+//     .then((data) => {
+//       const addDepartment = new Departments(data.departmentName);
+//       employeeData.push(addDepartment);
+//       console.log(employeeData);
+//       // menuQuestions();
+//     });
+// };
 
-// Query database
-// function to view All Employee data
-const queryAllEmployees = () => {
-  let sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
-    FROM ((employees
-    INNER JOIN roles ON employees.role_id = roles.id)
-    INNER JOIN departments ON roles.department_id = departments.id )`;
+// // Query database
+// // function to view All Employee data
+// const queryAllEmployees = () => {
+//   let sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
+//     FROM ((employees
+//     INNER JOIN roles ON employees.role_id = roles.id)
+//     INNER JOIN departments ON roles.department_id = departments.id )`;
 
-  // db.query(sql, function (err, results) {
-  //   console.log("results:", results);
-  //   db.end();
-  };
+//   db.query(sql, function (err, results))=>{
+//     console.log("results:", results);
+//     db.end();
+//   };
 
+// // function to view all roles
 
-// function to view all roles
+// function queryAllRoles() {
+//   db.query("SELECT * FROM roles", function (err, results) {
+//     console.log("results:", results);
+//     db.end();
+//   });
+// }
 
-function queryAllRoles() {
-  db.query("SELECT * FROM roles", function (err, results) {
-    console.log("results:", results);
-    db.end();
-  });
-}
+// // Function to view all departments
+// function queryAllDepartments() {
+//   db.query("SELECT * FROM departments", function (err, results) {
+//     console.log("results:", results);
+//     db.end();
+//   });
+// }
 
-// Function to view all departments
-function queryAllDepartments() {
-  db.query("SELECT * FROM departments", function (err, results) {
-    console.log("results:", results);
-    db.end();
-  });
-}
-
-// Function to view only titles of roles
-function queryTitleInRoles() {
-  db.query("SELECT roles.title FROM roles", function (err, results) {
-    console.log("results:", results);
-  });
-}
+// // Function to view only titles of roles
+// function queryTitleInRoles() {
+//   db.query("SELECT roles.title FROM roles", function (err, results) {
+//     console.log("results:", results);
+//   });
+// }
