@@ -15,9 +15,9 @@ CREATE TABLE roles(id INT NOT NULL PRIMARY KEY auto_increment,
 title VARCHAR(30), salary DECIMAL, department_id INT,
 FOREIGN KEY (department_id) references departments(id));
 
-CREATE TABLE employees(id INT NOT NULL PRIMARY KEY auto_increment, first_name VARCHAR(30), last_name VARCHAR(30), role_id INT, 
-FOREIGN KEY (role_id) references roles(id), manager_id INT );
-
 -- CREATE TABLE employees(id INT NOT NULL PRIMARY KEY auto_increment, first_name VARCHAR(30), last_name VARCHAR(30), role_id INT, 
--- FOREIGN KEY (role_id) references roles(id), manager_id INT NULL,
--- FOREIGN KEY (manager_id) references employees(id));
+-- FOREIGN KEY (role_id) references roles(id), manager_id INT);
+
+CREATE TABLE employees(id INT NOT NULL PRIMARY KEY auto_increment, first_name VARCHAR(30), last_name VARCHAR(30), role_id INT, 
+FOREIGN KEY (role_id) references roles(id), manager_id INT NULL,
+FOREIGN KEY (manager_id) references employees(id));

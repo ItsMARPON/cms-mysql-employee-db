@@ -35,6 +35,7 @@ const menuQuestions = async () => {
           "Add Role",
           "View All Departments",
           "Add Department",
+          "Quit",
         ],
         name: "menulist",
       },
@@ -57,8 +58,6 @@ const menuQuestions = async () => {
       } else {
         process.exit();
       }
-      // const roles = await Roles.findAll({});
-      // console.log(data);
     });
 };
 
@@ -92,9 +91,16 @@ const promptAddEmployee = () => {
         name: "employeeRoles",
       },
       {
-        type: "input",
+        type: "list",
         message:
-          "Who is the Manager supervising the employee (if none enter NULL)?",
+          "Who is the Manager supervising the employee?",
+        choices: [
+          {name: "Song Xiong", value: 2},
+          {name: "Mary Yang", value: 4},
+          {name: "Yana Xiong", value:6}, 
+          {name: "Zelda Xiong", value: 8},
+          {name: "Not Applicable", value:null}
+        ],
         name: "supervisor",
       },
     ])
@@ -118,23 +124,13 @@ const promptAddEmployee = () => {
         }
         employeeData.push(results);
         console.log(results, "Successfully added new Employee");
-        // menuQuestions();
+        menuQuestions();
       });
     });
 };
 
 // Questions for update Employee Role
-
 const promptUpdateEErole = () => {
-  const sql = `UPDATE employees (role_id) VALUES (?)`;
-  db.query(sql, employeeData.map((newRole)=> {
-    return newRole
-  }), (err, result) => {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-    console.log("Successfully updated employee role");
 
     // Generate questions for the user to select employee and add new role
     inquirer
@@ -176,17 +172,24 @@ const promptUpdateEErole = () => {
                   throw err;
                 }
                 employeeData.push(results);
-                console.log(
-                  results,
-                  "Successfully updated employee role to new role"
-                );
+                console.log(results,"Successfully added a new role into Roles table");
+
+                const sql =`UPDATE employees SET role_id = 9 WHERE id = 1`;
+
+                db.query(sql,results, (err, result)=> {
+                  if (err){
+                    console.log(err)
+                    throw err;
+                  }
+                  console.log("Successfully updated employee role");
+                })
               }
             );
           }
         );
-      });
-  });
+  })
 };
+  
 
 // // Function to Add a Role
 // const promptAddRole = () => {
