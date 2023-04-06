@@ -155,51 +155,45 @@ const promptUpdateEErole = () => {
       },
     ])
     .then((data) => {
+      // Taking user addition of role and adding to the Roles table
       db.query(
-        `INSERT INTO roles(title) VALUES('${data.newrole}')`,
+        `INSERT INTO roles(title) VALUES('${data.newRole}')`,
         function (err, results) {
           if (err) {
             console.log(err);
             throw err;
-      } 
+          }
+          // Obtain the id (primary key) from roles table after adding the new role into table
+          db.query(
+            `SELECT id FROM roles WHERE title = '${data.newRole}'`,
+            function (err, results) {
+              if (err) {
+                console.log(err);
+                throw err;
+              }
+              
+              const roleId = results[0];
 
-      // db.query(
-      //   `INSERT INTO roles(title) VALUES('${data.newrole}')`,
-      //   function (err, results) {
-      //     if (err) {
-      //       console.log(err);
-      //       throw err;
-      //     }
-      //     db.query(
-      //       `SELECT id FROM roles WHERE title = '${data.newRole}'`,
-      //       function (err, results) {
-      //         if (err) {
-      //           console.log(err);
-      //           throw err;
-      //         }
-      //         const newRoleId = results;
+              const newRoleId = results[0].split(':');
+              
+              console.log(roleId);
+              // console.log("Successfully added a new role into Roles table");
 
-      //         console.log(
-      //           results,
-      //           "Successfully added a new role into Roles table"
-      //         );
+              const sql = `UPDATE employees SET role_id = ${newRoleId} WHERE id = ${data.selectEmployee}`;
 
-      //         const sql = `UPDATE employees SET role_id = ${newRoleId} WHERE id = ${data.selectEmployee}`;
-
-      db.query(sql,results, (err, result)=> {
-        if (err){
-          console.log(err)
-          throw err;
+              db.query(sql, results, (err, result) => {
+                if (err) {
+                  console.log(err);
+                  throw err;
+                }
+                console.log("Successfully updated employee role");
+              });
+            }
+          );
         }
-        console.log("Successfully updated employee role");
-      })
-    }
-  );
-}
-);
-})
+      );
+    });
 };
-
 
 // // Function to Add a Role
 // const promptAddRole = () => {
