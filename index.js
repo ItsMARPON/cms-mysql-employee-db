@@ -182,7 +182,8 @@ const promptUpdateEErole = () => {
                   console.log(err);
                   throw err;
                 }
-                console.log("Successfully updated employee role in the Employees table");
+                console.log(results, "Successfully updated employee role in the Employees table");
+                menuQuestions();
               });
             }
           );
