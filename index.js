@@ -171,11 +171,9 @@ const promptUpdateEErole = () => {
                 console.log(err);
                 throw err;
               }
-              
-              const roleId = results.id;
-              
-              console.log(roleId);
-              // console.log("Successfully added a new role into Roles table");
+              const roleId = results[0].id;
+
+              console.log("Successfully added a new role into Roles table");
 
               const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${data.selectEmployee}`;
 
@@ -184,7 +182,7 @@ const promptUpdateEErole = () => {
                   console.log(err);
                   throw err;
                 }
-                console.log("Successfully updated employee role");
+                console.log("Successfully updated employee role in the Employees table");
               });
             }
           );
