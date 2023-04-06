@@ -24,12 +24,20 @@ db.connect((err) => {
 //     return newRole;
 //   });
 
-  db.query(`UPDATE employees 
-            SET role_id = 9
-            WHERE id = 1`,(err, result) => {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-    console.log("Successfully updated employee role");
-  });
+  // db.query(`UPDATE employees 
+  //           SET role_id = 9
+  //           WHERE id = 1`,(err, result) => {
+  //   if (err) {
+  //     console.log(err);
+  //     throw err;
+  //   }
+  //   console.log("Successfully updated employee role");
+  // });
+
+  const name = "Mary Yang";
+
+  const formatName = name.split(' ');
+ let first_name = formatName[0];
+ let last_name = formatName[1];
+ console.log(first_name);
+ console.log(last_name);

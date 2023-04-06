@@ -61,8 +61,9 @@ const menuQuestions = async () => {
     });
 };
 
-// Questions for Add Employee
+// Functinon to Add Employee for adding new employees to the database
 const promptAddEmployee = () => {
+  // Generate questions for user to input for Add Employee
   inquirer
     .prompt([
       {
@@ -92,20 +93,18 @@ const promptAddEmployee = () => {
       },
       {
         type: "list",
-        message:
-          "Who is the Manager supervising the employee?",
+        message: "Who is the Manager supervising the employee?",
         choices: [
-          {name: "Song Xiong", value: 2},
-          {name: "Mary Yang", value: 4},
-          {name: "Yana Xiong", value:6}, 
-          {name: "Zelda Xiong", value: 8},
-          {name: "Not Applicable", value:null}
+          { name: "Song Xiong", value: 2 },
+          { name: "Mary Yang", value: 4 },
+          { name: "Yana Xiong", value: 6 },
+          { name: "Zelda Xiong", value: 8 },
+          { name: "Not Applicable", value: null },
         ],
         name: "supervisor",
       },
     ])
     .then(function (data) {
-      // Employee ID removed from class to make this work
       let newEmployee = new Employee(
         data.firstname,
         data.lastname,
@@ -113,7 +112,7 @@ const promptAddEmployee = () => {
         data.supervisor
       );
 
-      // Using sql query to insert the data from prompt inquery into employees table
+      // Using sql query to insert the data from user input from questions into employees table
 
       let sql = `INSERT INTO employees SET ?`;
 
@@ -131,65 +130,76 @@ const promptAddEmployee = () => {
 
 // Questions for update Employee Role
 const promptUpdateEErole = () => {
+  // Generate questions for the user to select employee and add new role
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Which Employee's role do you want to update?",
+        choices: [
+          { name: "Isla Xiong", value: 1 },
+          { name: "Song Xiong", value: 2 },
+          { name: "Pong Xiong", value: 3 },
+          { name: "Mary Yang", value: 4 },
+          { name: "Theo Xiong", value: 5 },
+          { name: "Yana Xiong", value: 6 },
+          { name: "Oliver Xiong", value: 7 },
+          { name: "Zelda Xiong", value: 8 },
+        ],
+        name: "selectEmployee",
+      },
+      {
+        type: "input",
+        message: "What role do you want to assign to the selected Employee?",
+        name: "newRole",
+      },
+    ])
+    .then((data) => {
+      db.query(
+        `INSERT INTO roles(title) VALUES('${data.newrole}')`,
+        function (err, results) {
+          if (err) {
+            console.log(err);
+            throw err;
+      } 
 
-    // Generate questions for the user to select employee and add new role
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          message: "Which Employee's role do you want to update?",
-          choices: [
-            { name: "Isla Xiong", value: 1 },
-            { name: "Song Xiong", value: 2 },
-            { name: "Pong Xiong", value: 3 },
-            { name: "Mary Yang", value: 4 },
-            { name: "Theo Xiong", value: 5 },
-            { name: "Yana Xiong", value: 6 },
-            { name: "Oliver Xiong", value: 7 },
-            { name: "Zelda Xiong", value: 8 },
-          ],
-          name: "selectemployee",
-        },
-        {
-          type: "input",
-          message: "What role do you want to assign to the selected Employee?",
-          name: "newrole",
-        },
-      ])
-      .then((data) => {
-        db.query(
-          `INSERT INTO roles(title) VALUES('${data.newrole}')`,
-          function (err, results) {
-            if (err) {
-              console.log(err);
-              throw err;
-            }
-            db.query(
-              `SELECT id FROM roles WHERE title = '${data.newrole}'`,
-              function (err, results) {
-                if (err) {
-                  console.log(err);
-                  throw err;
-                }
-                employeeData.push(results);
-                console.log(results,"Successfully added a new role into Roles table");
+      // db.query(
+      //   `INSERT INTO roles(title) VALUES('${data.newrole}')`,
+      //   function (err, results) {
+      //     if (err) {
+      //       console.log(err);
+      //       throw err;
+      //     }
+      //     db.query(
+      //       `SELECT id FROM roles WHERE title = '${data.newRole}'`,
+      //       function (err, results) {
+      //         if (err) {
+      //           console.log(err);
+      //           throw err;
+      //         }
+      //         const newRoleId = results;
 
-                const sql =`UPDATE employees SET role_id = 9 WHERE id = 1`;
+      //         console.log(
+      //           results,
+      //           "Successfully added a new role into Roles table"
+      //         );
 
-                db.query(sql,results, (err, result)=> {
-                  if (err){
-                    console.log(err)
-                    throw err;
-                  }
-                  console.log("Successfully updated employee role");
-                })
-              }
-            );
-          }
-        );
-  })
+      //         const sql = `UPDATE employees SET role_id = ${newRoleId} WHERE id = ${data.selectEmployee}`;
+
+      db.query(sql,results, (err, result)=> {
+        if (err){
+          console.log(err)
+          throw err;
+        }
+        console.log("Successfully updated employee role");
+      })
+    }
+  );
+}
+);
+})
 };
-  
+
 
 // // Function to Add a Role
 // const promptAddRole = () => {
