@@ -172,14 +172,12 @@ const promptUpdateEErole = () => {
                 throw err;
               }
               
-              const roleId = results[0];
-
-              const newRoleId = results[0].split(':');
+              const roleId = results.id;
               
               console.log(roleId);
               // console.log("Successfully added a new role into Roles table");
 
-              const sql = `UPDATE employees SET role_id = ${newRoleId} WHERE id = ${data.selectEmployee}`;
+              const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${data.selectEmployee}`;
 
               db.query(sql, results, (err, result) => {
                 if (err) {
