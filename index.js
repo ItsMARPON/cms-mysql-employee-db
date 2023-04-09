@@ -52,8 +52,8 @@ const menuQuestions = async () => {
         promptAddRole();
       } else if (data.menulist === "View All Departments") {
         queryAllDepartments();
-        // } else if (data.menulist === "Add Department") {
-        //   promptAddDepartment();
+      } else if (data.menulist === "Add Department") {
+        promptAddDepartment();
       } else {
         process.exit();
       }
@@ -215,47 +215,43 @@ const promptAddRole = () => {
     ])
     .then((data) => {
       const addRole = new Role(data.title, data.salary, data.listDepartments);
-      console.log(addRole, "This is Lib");
 
-      Role.prototype.addInfo = function(){
-        const addTitle = this.title;
-        console.log(addTitle, "this is addTitle()");
-      }
-      addRole.addInfo();
+      const newTitle = addRole.getTitle();
+      const newSalary = addRole.getSalary();
+      const newDepartment = addRole.getDepartmentId();
 
-      // for(let i =0 ; i < results.length; i ++){
-      //   const addTitle = results[i].title;
-      //   const addSalary = results[i].salary;
-      //   const addDepartment = results[i].listDepartments;
-      // db.query(`INSERT INTO roles VALUES ${addRole}`, function (err, results){
-      //   if(err){
-      //     console.log(err)
-      //     throw err;
-      //   }
-      // })
+      sql = `INSERT INTO roles(title, salary, department_id) VALUES ("${newTitle}", ${newSalary}, ${newDepartment})`;
+
+      db.query(sql, function (err, results){
+        if(err){
+          console.log(err)
+          throw err;
+        }
+        console.log("Successfully added to Roles table");
+      })
     });
 };
 
 // // Function to Add a Department
-// const promptAddDepartment = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "What is the name of the Department?",
-//         name: "departmentName",
-//       },
-//     ])
-//     .then((data) => {
-//       const addDepartment = new Departments(data.departmentName);
-//       employeeData.push(addDepartment);
-//       console.log(employeeData);
-//       // menuQuestions();
-//     });
-// };
+const promptAddDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the Department?",
+        name: "departmentName",
+      },
+    ])
+    .then((data) => {
+      const addDepartment = new Department(data.departmentName);
+      employeeData.push(addDepartment);
+      console.log(employeeData);
+      menuQuestions();
+    });
+};
 
 
-// // function to view All Employee data
+// function to view All Employee data
 const queryAllEmployees = () => {
   const sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
     FROM ((employees
@@ -272,6 +268,8 @@ const queryAllEmployees = () => {
       })
       
     };
+
+
 // // function to view all roles
 
 function queryAllRoles() {
