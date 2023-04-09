@@ -27,7 +27,7 @@ Install dotenv <br />
 
 ## Usage
 
-![Screenshot of MySQL2 CMS command line](./assets/images/module12-cms1.png)
+![Screenshot of MySQL2 CMS command line](./assets/images/module12-cms1.png) <br />
 
 Video Walk through of using CMS Employee Tracker: ()<br />
 
