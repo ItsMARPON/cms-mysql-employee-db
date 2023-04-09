@@ -1,11 +1,13 @@
 // Include packages needed for this application
 const inquirer = require("inquirer");
+const art = require('ascii-art');
 const mysql = require("mysql2");
 const Department = require("./lib/department");
 const Role = require("./lib/role");
 const Employee = require("./lib/employee");
 let db = require("./config/connection");
 require("dotenv").config();
+
 
 
 db.connect((err) => {
@@ -15,6 +17,20 @@ db.connect((err) => {
   console.log("Connected to MYSQL2");
   menuQuestions();
 });
+
+// Add some introduction design to Command Line
+
+art.font("Employee Tracker", 'doom', (err, rendered)=>{
+  //if err, err is the error that occured
+  if(err){
+    console.log(err)
+    throw err;
+  }
+    //if !err rendered is the ascii
+  console.log(rendered);
+
+});
+
 
 // An array of initial questions for start of application
 
