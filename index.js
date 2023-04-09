@@ -7,8 +7,6 @@ const Employee = require("./lib/employee");
 let db = require("./config/connection");
 require("dotenv").config();
 
-//The user input Employee Data
-let employeeData = [];
 
 db.connect((err) => {
   if (err) {
@@ -120,7 +118,6 @@ const promptAddEmployee = () => {
           console.log(err);
           throw err;
         }
-        employeeData.push(results);
         console.log(results, "Successfully added new Employee");
         menuQuestions();
       });
@@ -181,7 +178,7 @@ const promptUpdateEErole = () => {
                   console.log(err);
                   throw err;
                 }
-                console.log(results, "Successfully updated employee role in the Employees table");
+                console.log("Successfully updated employee role in the Employees table");
                 menuQuestions();
               });
             }
@@ -208,7 +205,11 @@ const promptAddRole = () => {
       {
         type: "list",
         message: "What is the department?",
-        choices: [{name: "Legal", value: 1},{name: "Finance", value: 2}, {name: "IT", value: 3},{name: "Sales", value: 4},
+        choices: [
+          { name: "Legal", value: 1 },
+          { name: "Finance", value: 2 },
+          { name: "IT", value: 3 },
+          { name: "Sales", value: 4 },
         ],
         name: "listDepartments",
       },
@@ -222,13 +223,13 @@ const promptAddRole = () => {
 
       sql = `INSERT INTO roles(title, salary, department_id) VALUES ("${newTitle}", ${newSalary}, ${newDepartment})`;
 
-      db.query(sql, function (err, results){
-        if(err){
-          console.log(err)
+      db.query(sql, function (err, results) {
+        if (err) {
+          console.log(err);
           throw err;
         }
         console.log("Successfully added to Roles table");
-      })
+      });
     });
 };
 
@@ -244,12 +245,21 @@ const promptAddDepartment = () => {
     ])
     .then((data) => {
       const addDepartment = new Department(data.departmentName);
-      employeeData.push(addDepartment);
-      console.log(employeeData);
+
+      const newDepartment = addDepartment.getName();
+
+      sql = `INSERT INTO departments(name) VALUES ("${newDepartment}")`;
+
+      db.query(sql, function (err, results) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+        console.log("Successfully added to Departments table");
+      });
       menuQuestions();
     });
 };
-
 
 // function to view All Employee data
 const queryAllEmployees = () => {
@@ -258,17 +268,15 @@ const queryAllEmployees = () => {
     INNER JOIN roles ON employees.role_id = roles.id)
     INNER JOIN departments ON roles.department_id = departments.id )`;
 
-      db.query(sql, function (err, results){
-        if(err){
-          console.log(err)
-          throw err;
-        }
-        console.table(results);
-        menuQuestions();
-      })
-      
-    };
-
+  db.query(sql, function (err, results) {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+    console.table(results);
+    menuQuestions();
+  });
+};
 
 // // function to view all roles
 
@@ -278,27 +286,25 @@ function queryAllRoles() {
     INNER JOIN departments ON roles.department_id = departments.id)`;
 
   db.query(sql, function (err, results) {
-   if(err){
-    console.log(err)
-    throw err;
-   }
-   console.table(results);
-   menuQuestions();
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+    console.table(results);
+    menuQuestions();
   });
-};
+}
 
 // // Function to view all departments
 function queryAllDepartments() {
   const sql = `SELECT name AS 'Department Name' FROM departments`;
 
   db.query(sql, function (err, results) {
-   if(err){
-    console.log(err)
-    throw err;
-   }
-   console.table(results);
-   menuQuestions();
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+    console.table(results);
+    menuQuestions();
   });
 }
-
-

@@ -1,6 +1,5 @@
 const express = require("express");
-const mysql = require("mysql2");
-// const db = require("./config/connection");
+const db = require("./config/connection");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3001;
@@ -20,7 +19,7 @@ app.use(express.json());
 
 // Get all employee data
 app.get("/api/employees", (req, res) => {
-  let sql = `SELECT id, first_name, last_name FROM employees`;
+  let sql = `SELECT * FROM employees`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -31,20 +30,6 @@ app.get("/api/employees", (req, res) => {
     res.status(200).json({ message: "success", data: rows });
   });
 });
-
-// Create an employee
-// app.post("/api/employees", ({ body }, res) => {
-//   const sql = `INSERT INTO employees (first_name) VALUES (?)`;
-//   const params = [body.first_name];
-
-//   db.query(sql, params, (err, result) => {
-//     if (err) {
-//       res.status(400).json({ error: err.message });
-//       return;
-//     }
-//     res.status(200).json({ message: "success", data: body });
-//   });
-// });
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
