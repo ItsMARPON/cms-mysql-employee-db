@@ -24,6 +24,7 @@ Install Node.js version 16 <br />
 Install MySQL2 <br />
 Install Inquirer <br />
 Install dotenv <br />
+Install ascii-art <br />
 
 ## Usage
 
