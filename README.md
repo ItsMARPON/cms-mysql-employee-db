@@ -2,7 +2,7 @@
 
 ## Description
 
-I want to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and  MySQL. This CMS will allow non-developers to easily view and interact with information stored in databases.
+I want to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL. This CMS will allow non-developers to easily view and interact with information stored in databases.
 
 ## Table of Contents
 
@@ -19,18 +19,26 @@ I want to build a command-line application from scratch to manage a company's em
 - [Questions](#questions)
 
 ## Installation
+
 Install Node.js version 16 <br />
 Install MySQL2 <br />
 Install Inquirer <br />
 Install dotenv <br />
 
 ## Usage
-![Screenshot of MySQL2 CMS command line]()
+
+![Screenshot of MySQL2 CMS command line](./assets/images/module12-cms1.png)
 
 Video Walk through of using CMS Employee Tracker: ()<br />
 
-
-In the command line of GitBash or Powershell, type node index.js to run the application. <br />
+In the command line of GitBash or Powershell, type the following to begin the CMS employee tracker:<br />
+mysql -u root -p <br />
+type your password <br />
+source db/schema.sql; <br />
+source db/seeds.sql; <br />
+source db/queries.sql; <br />
+quit <br />
+node index.js<br />
 
 AS A business owner<br />
 I WANT to be able to view and manage the departments, roles, and employees in my company<br />
@@ -59,12 +67,12 @@ THEN I am prompted to select an employee to update and their new role and this i
 Credits to Ask BCS assistance and Calendly Tutors for assisting with code contributions and/or troubleshooting errors.
 
 ## License
+
 MIT License (https://opensource.org/licenses/MIT)
 
 ## Badges
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-
 
 ## Questions
 
