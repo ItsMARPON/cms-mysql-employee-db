@@ -123,7 +123,7 @@ const promptAddEmployee = () => {
           console.log(err);
           throw err;
         }
-        console.log(results, "Successfully added new Employee");
+        console.log("Successfully added new Employee");
         menuQuestions();
       });
     });
@@ -293,8 +293,8 @@ const promptAddDepartment = () => {
           throw err;
         }
         console.log("Successfully added to Departments table");
+        menuQuestions();
       });
-      menuQuestions();
     });
 };
 
