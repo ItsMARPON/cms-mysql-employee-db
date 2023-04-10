@@ -133,141 +133,162 @@ const promptAddEmployee = () => {
 const promptUpdateEErole = () => {
   // Generate questions for the user to select employee and add new role
 
-db.query(`SELECT first_name, last_name FROM employees`, function(err, results){
-  if(err){
-    console.log(err)
-    throw err;
-  }
-  
-  const listEmployees = results.map(({first_name, last_name})=>({name:first_name + ' ' + last_name}));
+  db.query(
+    `SELECT first_name, last_name FROM employees`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
 
-  db.query(`SELECT name FROM departments`, function(err, results){
-    if(err){
-      console.log(err);
-      throw err;
-    }
-  
-    const listDepartments = results.map(({name})=>({name}));
- 
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        message: "Which Employee's role do you want to update?",
-        choices: listEmployees,
-        name: "selectEmployee",
-      },
-      {
-        type: "input",
-        message: "What role do you want to assign to the selected Employee?",
-        name: "newRole",
-      },
-      {
-        type: "input",
-        message: "What is the salary for the updated role?",
-        name: "newSalary",
-      },
-      {
-        type: "list",
-        message: "What department does the role belong to?",
-        choices: listDepartments,
-        name: "selectDept",
-      },
-    ])
-    .then((data) => {
-      // Taking user addition of role and adding to the Roles table
+      const listEmployees = results.map(({ first_name, last_name }) => ({
+        name: first_name + " " + last_name,
+      }));
 
-      let dept = listDepartments.find(e => e.name === data.selectDept);
-      let indexOfDept = listDepartments.indexOf(dept) + 1;
-
-      db.query(
-        `INSERT INTO roles(title, salary, department_id) VALUES('${data.newRole}', '${data.newSalary}', '${indexOfDept}')`,
-        function (err, results) {
-          if (err) {
-            console.log(err);
-            throw err;
-          }
-          // Obtain the id (primary key) from roles table after adding the new role into table
-          db.query(
-            `SELECT id FROM roles WHERE title = '${data.newRole}'`,
-            function (err, results) {
-              if (err) {
-                console.log(err);
-                throw err;
-              }
-              const roleId = results[0].id;
-
-              console.log("Successfully added a new role into Roles table");
-              // Once user selects employee from the list, use find() method to find the first element in the array that satisfies the testing function.
-              let employee = listEmployees.find(e => e.name === data.selectEmployee);
-              // After employee is provided, then use indexOf to find the index of employee
-              let indexOfEmployee = listEmployees.indexOf(employee) + 1;
-             
-              const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${indexOfEmployee}`;
-
-              db.query(sql, results, (err, results) => {
-                if (err) {
-                  console.log(err);
-                  throw err;
-                }
-                console.log(
-                  "Successfully updated employee role in the Employees table"
-                );
-                menuQuestions();
-              });
-            }
-          );
-        }
-      );
-    });
-  });
-  })
-};
-
-// // Function to Add a Role to the Roles table
-const promptAddRole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is the role/title name?",
-        name: "title",
-      },
-      {
-        type: "input",
-        message: "What is the salary?",
-        name: "salary",
-      },
-      {
-        type: "list",
-        message: "What is the department?",
-        choices: [
-          { name: "Legal", value: 1 },
-          { name: "Finance", value: 2 },
-          { name: "IT", value: 3 },
-          { name: "Sales", value: 4 },
-        ],
-        name: "listDepartments",
-      },
-    ])
-    .then((data) => {
-      const addRole = new Role(data.title, data.salary, data.listDepartments);
-
-      const newTitle = addRole.getTitle();
-      const newSalary = addRole.getSalary();
-      const newDepartment = addRole.getDepartmentId();
-
-      sql = `INSERT INTO roles(title, salary, department_id) VALUES ("${newTitle}", ${newSalary}, ${newDepartment})`;
-
-      db.query(sql, function (err, results) {
+      db.query(`SELECT name FROM departments`, function (err, results) {
         if (err) {
           console.log(err);
           throw err;
         }
-        console.log("Successfully added to Roles table");
-        menuQuestions();
+
+        const listDepartments = results.map(({ name }) => ({ name }));
+
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              message: "Which Employee's role do you want to update?",
+              choices: listEmployees,
+              name: "selectEmployee",
+            },
+            {
+              type: "input",
+              message:
+                "What role do you want to assign to the selected Employee?",
+              name: "newRole",
+            },
+            {
+              type: "input",
+              message: "What is the salary for the updated role?",
+              name: "newSalary",
+            },
+            {
+              type: "list",
+              message: "What department does the role belong to?",
+              choices: listDepartments,
+              name: "selectDept",
+            },
+          ])
+          .then((data) => {
+            // Taking user addition of role and adding to the Roles table
+
+            let dept = listDepartments.find((e) => e.name === data.selectDept);
+            let indexOfDept = listDepartments.indexOf(dept) + 1;
+
+            db.query(
+              `INSERT INTO roles(title, salary, department_id) VALUES('${data.newRole}', '${data.newSalary}', '${indexOfDept}')`,
+              function (err, results) {
+                if (err) {
+                  console.log(err);
+                  throw err;
+                }
+                // Obtain the id (primary key) from roles table after adding the new role into table
+                db.query(
+                  `SELECT id FROM roles WHERE title = '${data.newRole}'`,
+                  function (err, results) {
+                    if (err) {
+                      console.log(err);
+                      throw err;
+                    }
+                    const roleId = results[0].id;
+
+                    console.log(
+                      "Successfully added a new role into Roles table"
+                    );
+                    // Once user selects employee from the list, use find() method to find the first element in the array that satisfies the testing function.
+                    let employee = listEmployees.find(
+                      (e) => e.name === data.selectEmployee
+                    );
+                    // After employee is provided, then use indexOf to find the index of employee
+                    let indexOfEmployee = listEmployees.indexOf(employee) + 1;
+
+                    const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${indexOfEmployee}`;
+
+                    db.query(sql, results, (err, results) => {
+                      if (err) {
+                        console.log(err);
+                        throw err;
+                      }
+                      console.log(
+                        "Successfully updated employee role in the Employees table"
+                      );
+                      menuQuestions();
+                    });
+                  }
+                );
+              }
+            );
+          });
       });
-    });
+    }
+  );
+};
+
+// // Function to Add a Role to the Roles table
+const promptAddRole = () => {
+  // display a list of departments available for user selection
+  db.query(`SELECT name FROM departments`, function (err, results) {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+
+    const listDepartments = results.map(({ name }) => ({ name }));
+
+    // Generate questions for user input
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What is the role/title name?",
+          name: "title",
+        },
+        {
+          type: "input",
+          message: "What is the salary?",
+          name: "salary",
+        },
+        {
+          type: "list",
+          message: "What is the department?",
+          choices: listDepartments,
+          name: "listDepartments",
+        },
+      ])
+      .then((data) => {
+        // User selects department, use find() method to return the department in the array that satisfies the provided testing function.
+        let dept = listDepartments.find((e) => e.name === data.listDepartments);
+        // Find the index of the department in the array
+        let indexOfDept = listDepartments.indexOf(dept) + 1;
+        // create a new Role class with the user provided information
+        const addRole = new Role(data.title, data.salary, indexOfDept);
+
+        const newTitle = addRole.getTitle();
+        const newSalary = addRole.getSalary();
+        const newDepartment = addRole.getDepartmentId();
+
+        sql = `INSERT INTO roles(title, salary, department_id) VALUES ("${newTitle}", ${newSalary}, ${newDepartment})`;
+
+        db.query(sql, function (err, results) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
+          console.log("Successfully added to Roles table");
+          menuQuestions();
+        });
+      });
+  });
 };
 
 // // Function to Add a Department
