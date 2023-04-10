@@ -1,7 +1,6 @@
 // Include packages needed for this application
 const inquirer = require("inquirer");
 const art = require("./helper/helper");
-const mysql = require("mysql2");
 const Department = require("./lib/department");
 const Role = require("./lib/role");
 const Employee = require("./lib/employee");
@@ -322,49 +321,24 @@ const promptAddDepartment = () => {
 
 // function to view All Employee data
 const queryAllEmployees = () => {
-  db.query(`SELECT manager_id FROM employees`, function (err, results) {
+  const sql = `SELECT e.id AS "Employee ID", e.first_name AS 'First Name', e.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', CONCAT(m.first_name, ' ', m.last_name) AS 'Supervisor'
+    FROM (((employees e
+    LEFT JOIN employees m
+    ON e.manager_id = m.id)
+    INNER JOIN roles ON e.role_id = roles.id)
+    INNER JOIN departments ON roles.department_id = departments.id )`;
+
+  db.query(sql, function (err, results) {
     if (err) {
       console.log(err);
       throw err;
     }
-    let listIdSupervisors = results.filter((e) => e.manager_id !== null);
-
-    const listIdValues = listIdSupervisors.values();
-    for (let value of listIdValues){
-    console.log(value, "This is the value");      
-    };
-
-
-    // Need to figure out how to apply each supervisor id to find name
-    db.query(`SELECT first_name FROM employees WHERE id = "1"`, function (err, results) {
-      if (err) {
-        console.log(err);
-        throw err;
-      }
-
-      console.log(
-        results,
-        "This is the list of employees matching Supervisor Id"
-      );
-
-    //   const sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
-    // FROM ((employees
-    // INNER JOIN roles ON employees.role_id = roles.id)
-    // INNER JOIN departments ON roles.department_id = departments.id )`;
-
-    //   db.query(sql, function (err, results) {
-    //     if (err) {
-    //       console.log(err);
-    //       throw err;
-    //     }
-    //     console.table(results);
-    //     menuQuestions();
-    //   });
-    });
+    console.table(results);
+    menuQuestions();
   });
 };
 
-// // function to view all roles
+// function to view all roles
 
 function queryAllRoles() {
   const sql = `SELECT title AS 'Role/Title', salary AS 'Role Salary', departments.name AS 'Department Name'
@@ -379,9 +353,9 @@ function queryAllRoles() {
     console.table(results);
     menuQuestions();
   });
-}
+};
 
-// // Function to view all departments
+// Function to view all departments
 function queryAllDepartments() {
   const sql = `SELECT name AS 'Department Name' FROM departments`;
 
@@ -393,4 +367,4 @@ function queryAllDepartments() {
     console.table(results);
     menuQuestions();
   });
-}
+};
