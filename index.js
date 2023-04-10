@@ -1,14 +1,12 @@
 // Include packages needed for this application
 const inquirer = require("inquirer");
-const art = require('ascii-art');
+const art = require("./helper/helper");
 const mysql = require("mysql2");
 const Department = require("./lib/department");
 const Role = require("./lib/role");
 const Employee = require("./lib/employee");
 let db = require("./config/connection");
 require("dotenv").config();
-
-
 
 db.connect((err) => {
   if (err) {
@@ -18,19 +16,10 @@ db.connect((err) => {
   menuQuestions();
 });
 
-// Add some introduction design to Command Line
-
-art.font("Employee Tracker", 'doom', (err, rendered)=>{
-  //if err, err is the error that occured
-  if(err){
-    console.log(err)
-    throw err;
-  }
-    //if !err rendered is the ascii
-  console.log(rendered);
-
-});
-
+const intro = async () => {
+  let displayArt = art;
+};
+intro();
 
 // An array of initial questions for start of application
 
@@ -143,21 +132,29 @@ const promptAddEmployee = () => {
 // Questions for update Employee Role
 const promptUpdateEErole = () => {
   // Generate questions for the user to select employee and add new role
+
+db.query(`SELECT first_name, last_name FROM employees`, function(err, results){
+  if(err){
+    console.log(err)
+    throw err;
+  }
+  
+  const listEmployees = results.map(({first_name, last_name})=>({name:first_name + ' ' + last_name}));
+
+  db.query(`SELECT name FROM departments`, function(err, results){
+    if(err){
+      console.log(err);
+      throw err;
+    }
+  
+    const listDepartments = results.map(({name})=>({name}));
+ 
   inquirer
     .prompt([
       {
         type: "list",
         message: "Which Employee's role do you want to update?",
-        choices: [
-          { name: "Isla Xiong", value: 1 },
-          { name: "Song Xiong", value: 2 },
-          { name: "Pong Xiong", value: 3 },
-          { name: "Mary Yang", value: 4 },
-          { name: "Theo Xiong", value: 5 },
-          { name: "Yana Xiong", value: 6 },
-          { name: "Oliver Xiong", value: 7 },
-          { name: "Zelda Xiong", value: 8 },
-        ],
+        choices: listEmployees,
         name: "selectEmployee",
       },
       {
@@ -165,11 +162,26 @@ const promptUpdateEErole = () => {
         message: "What role do you want to assign to the selected Employee?",
         name: "newRole",
       },
+      {
+        type: "input",
+        message: "What is the salary for the updated role?",
+        name: "newSalary",
+      },
+      {
+        type: "list",
+        message: "What department does the role belong to?",
+        choices: listDepartments,
+        name: "selectDept",
+      },
     ])
     .then((data) => {
       // Taking user addition of role and adding to the Roles table
+
+      let dept = listDepartments.find(e => e.name === data.selectDept);
+      let indexOfDept = listDepartments.indexOf(dept) + 1;
+
       db.query(
-        `INSERT INTO roles(title) VALUES('${data.newRole}')`,
+        `INSERT INTO roles(title, salary, department_id) VALUES('${data.newRole}', '${data.newSalary}', '${indexOfDept}')`,
         function (err, results) {
           if (err) {
             console.log(err);
@@ -186,15 +198,21 @@ const promptUpdateEErole = () => {
               const roleId = results[0].id;
 
               console.log("Successfully added a new role into Roles table");
-
-              const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${data.selectEmployee}`;
+              // Once user selects employee from the list, use find() method to find the first element in the array that satisfies the testing function.
+              let employee = listEmployees.find(e => e.name === data.selectEmployee);
+              // After employee is provided, then use indexOf to find the index of employee
+              let indexOfEmployee = listEmployees.indexOf(employee) + 1;
+             
+              const sql = `UPDATE employees SET role_id = ${roleId} WHERE id = ${indexOfEmployee}`;
 
               db.query(sql, results, (err, results) => {
                 if (err) {
                   console.log(err);
                   throw err;
                 }
-                console.log("Successfully updated employee role in the Employees table");
+                console.log(
+                  "Successfully updated employee role in the Employees table"
+                );
                 menuQuestions();
               });
             }
@@ -202,6 +220,8 @@ const promptUpdateEErole = () => {
         }
       );
     });
+  });
+  })
 };
 
 // // Function to Add a Role to the Roles table
@@ -245,6 +265,7 @@ const promptAddRole = () => {
           throw err;
         }
         console.log("Successfully added to Roles table");
+        menuQuestions();
       });
     });
 };

@@ -37,7 +37,7 @@ In the command line of GitBash or Powershell, type the following to begin the CM
 mysql -u root -p <br />
 type your password <br />
 source db/schema.sql; <br />
-source db/seeds.sql; <br />
+update employee information in seeds.sql file then source db/seeds.sql; <br />
 source db/queries.sql; <br />
 quit <br />
 node index.js<br />

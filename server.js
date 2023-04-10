@@ -13,7 +13,8 @@ db.connect((err) => {
   console.log("Connected to mysql");
 });
 
-// Express middleware
+
+// Use Express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
