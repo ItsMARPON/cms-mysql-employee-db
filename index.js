@@ -321,6 +321,15 @@ const promptAddDepartment = () => {
 
 // function to view All Employee data
 const queryAllEmployees = () => {
+  db.query(`SELECT manager_id FROM employees`), function (err, results){
+    if (err){
+      console.log(err)
+      throw err;
+    }
+    const supervisorId = results.map(({manager_id})=>({manager_id}));
+
+    console.log(supervisorId, "This is select supervising manager");
+
   const sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
     FROM ((employees
     INNER JOIN roles ON employees.role_id = roles.id)
@@ -332,8 +341,17 @@ const queryAllEmployees = () => {
       throw err;
     }
     console.table(results);
-    menuQuestions();
+    // for ( let i = 0 ; i < results.length; i++ ){
+    //   if(results[i].id === results[i].manager_id){
+    //     console.log(data[i], "This is the for loop");
+    //   } else {
+    //     console.log("It did not work");
+    //   }
+    // };
+    // console.table(results);
+    // menuQuestions();
   });
+};
 };
 
 // // function to view all roles
