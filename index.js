@@ -205,6 +205,7 @@ const promptUpdateEErole = () => {
                     console.log(
                       "Successfully added a new role into Roles table"
                     );
+
                     // Once user selects employee from the list, use find() method to find the first element in the array that satisfies the testing function.
                     let employee = listEmployees.find(
                       (e) => e.name === data.selectEmployee
@@ -321,37 +322,47 @@ const promptAddDepartment = () => {
 
 // function to view All Employee data
 const queryAllEmployees = () => {
-  db.query(`SELECT manager_id FROM employees`), function (err, results){
-    if (err){
-      console.log(err)
-      throw err;
-    }
-    const supervisorId = results.map(({manager_id})=>({manager_id}));
-
-    console.log(supervisorId, "This is select supervising manager");
-
-  const sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
-    FROM ((employees
-    INNER JOIN roles ON employees.role_id = roles.id)
-    INNER JOIN departments ON roles.department_id = departments.id )`;
-
-  db.query(sql, function (err, results) {
+  db.query(`SELECT manager_id FROM employees`, function (err, results) {
     if (err) {
       console.log(err);
       throw err;
     }
-    console.table(results);
-    // for ( let i = 0 ; i < results.length; i++ ){
-    //   if(results[i].id === results[i].manager_id){
-    //     console.log(data[i], "This is the for loop");
-    //   } else {
-    //     console.log("It did not work");
-    //   }
-    // };
-    // console.table(results);
-    // menuQuestions();
+    let listIdSupervisors = results.filter((e) => e.manager_id !== null);
+
+    let iterator = listIdSupervisors.values();
+    for (const value of iterator){
+    console.log(value, "This is the value method");      
+    };
+
+
+
+    // Need to figure out how to apply each supervisor id to find name
+    db.query(`SELECT first_name FROM employees WHERE id = "1"`, function (err, results) {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+
+      console.log(
+        results,
+        "This is the list of employees matching Supervisor Id"
+      );
+
+    //   const sql = `SELECT employees.id AS "Employee ID", employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role/Title', roles.salary AS 'Role Salary', departments.name AS 'Department Name', employees.manager_id AS 'Supervising Manager'
+    // FROM ((employees
+    // INNER JOIN roles ON employees.role_id = roles.id)
+    // INNER JOIN departments ON roles.department_id = departments.id )`;
+
+    //   db.query(sql, function (err, results) {
+    //     if (err) {
+    //       console.log(err);
+    //       throw err;
+    //     }
+    //     console.table(results);
+    //     menuQuestions();
+    //   });
+    });
   });
-};
 };
 
 // // function to view all roles
