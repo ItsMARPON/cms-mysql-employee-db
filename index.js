@@ -329,11 +329,10 @@ const queryAllEmployees = () => {
     }
     let listIdSupervisors = results.filter((e) => e.manager_id !== null);
 
-    let iterator = listIdSupervisors.values();
-    for (const value of iterator){
-    console.log(value, "This is the value method");      
+    const listIdValues = listIdSupervisors.values();
+    for (let value of listIdValues){
+    console.log(value, "This is the value");      
     };
-
 
 
     // Need to figure out how to apply each supervisor id to find name
